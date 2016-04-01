@@ -22,6 +22,22 @@ public class MutateObjectTest {
     }
 
     @Test
+    public void evenLengthStringWithSameHashCode() {
+        String expected = "somehashcode";
+        String actual = Mutate.stringWithSameHashCode(expected);
+        assertNotEquals(expected, actual);
+        assertEquals(expected.hashCode(), actual.hashCode());
+    }
+
+    @Test
+    public void oddLengthStringWithSameHashCode() {
+        String expected = "some hashcode";
+        String actual = Mutate.stringWithSameHashCode(expected);
+        assertNotEquals(expected, actual);
+        assertEquals(expected.hashCode(), actual.hashCode());
+    }
+
+    @Test
     public void mutatePojosIntField() throws Exception {
         Pojo p = new Pojo(42, "hello");
         Field f = getField(Pojo.class, "someInt");
