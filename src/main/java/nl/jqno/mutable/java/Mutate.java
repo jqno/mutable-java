@@ -4,48 +4,48 @@ import java.lang.reflect.Field;
 
 public class Mutate {
     public static void setBoolean(Boolean receiver, boolean newValue) {
-        set(Boolean.class, "value", receiver, newValue);
+        setPrivateField(Boolean.class, "value", receiver, newValue);
     }
 
     public static void setByte(Byte receiver, byte newValue) {
-        set(Byte.class, "value", receiver, newValue);
+        setPrivateField(Byte.class, "value", receiver, newValue);
     }
 
     public static void setChar(Character receiver, char newValue) {
-        set(Character.class, "value", receiver, newValue);
+        setPrivateField(Character.class, "value", receiver, newValue);
     }
 
     public static void setDouble(Double receiver, double newValue) {
-        set(Double.class, "value", receiver, newValue);
+        setPrivateField(Double.class, "value", receiver, newValue);
     }
 
     public static void setFloat(Float receiver, float newValue) {
-        set(Float.class, "value", receiver, newValue);
+        setPrivateField(Float.class, "value", receiver, newValue);
     }
 
     public static void setInteger(Integer receiver, int newValue) {
-        set(Integer.class, "value", receiver, newValue);
+        setPrivateField(Integer.class, "value", receiver, newValue);
     }
 
     public static void setLong(Long receiver, long newValue) {
-        set(Long.class, "value", receiver, newValue);
+        setPrivateField(Long.class, "value", receiver, newValue);
     }
 
     public static void setShort(Short receiver, short newValue) {
-        set(Short.class, "value", receiver, newValue);
+        setPrivateField(Short.class, "value", receiver, newValue);
     }
 
     public static void setString(String receiver, String newValue) {
         try {
             Field f = getDeclaredField(String.class, "value");
-            set(String.class, "value", receiver, f.get(newValue));
+            setPrivateField(String.class, "value", receiver, f.get(newValue));
         }
         catch (IllegalAccessException | NoSuchFieldException e) {
             itDidntWork(e);
         }
     }
 
-    private static <T> void set(Class<T> type, String fieldName, T receiver, Object newValue) {
+    public static <T> void setPrivateField(Class<T> type, String fieldName, T receiver, Object newValue) {
         try {
             Field field = getDeclaredField(type, fieldName);
             field.set(receiver, newValue);
