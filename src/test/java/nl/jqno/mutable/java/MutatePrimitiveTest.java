@@ -1,20 +1,10 @@
 package nl.jqno.mutable.java;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class MutatePrimitiveTest {
-    @Test@Ignore("Can't confirm infinite loop due to halting problem. Too bad.")
-    public void createAnInfiniteLoop() {
-        Integer five = 5;
-        Mutate.setInteger(five, 4);
-        for (Integer i = 0; i < 10; i++) {
-            System.out.println(i);
-        }
-    }
-
     @Test
     public void mutateBoolean() {
         Mutate.setBoolean(true, false);

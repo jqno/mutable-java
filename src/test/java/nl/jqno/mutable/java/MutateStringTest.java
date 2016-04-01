@@ -19,12 +19,4 @@ public class MutateStringTest {
         byte[] newValue = "yyy".getBytes();
         assertTrue(Arrays.equals(newValue, mutated));
     }
-
-    @Test
-    public void helloWorld() {
-        Mutate.setString("hello", "world");
-
-        System.out.print("hello ");
-        System.out.println("hello");
-    }
 }
