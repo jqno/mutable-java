@@ -1,0 +1,16 @@
+# Eclipse files
+.metadata/
+.classpath
+.project
+.settings/
+target/
+.cache
+
+# IntelliJ files
+.idea/
+*.iml
+
+# OS specific files
+.DS_Store
+desktop.ini
+Thumbs.db
