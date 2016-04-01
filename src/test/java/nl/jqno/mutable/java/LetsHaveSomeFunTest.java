@@ -3,6 +3,9 @@ package nl.jqno.mutable.java;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Arrays;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class LetsHaveSomeFunTest {
@@ -30,17 +33,18 @@ public class LetsHaveSomeFunTest {
     }
 
     @Test
-    public void callMeMaybe() {
-        CallMe maybe = Mutate.createEnumConstant(CallMe.class, 2, "MAYBE");
-        assertEquals("Call me maybe", maybe.call());
-        System.out.println(maybe.call());
+    public void confusingPokerGame() {
+        Mutate.addEnumConstant(Suit.class, "SWORDS");
+
+        assertEquals("HEARTS", Suit.values()[0].name());
+        assertEquals("CLUBS", Suit.values()[1].name());
+        assertEquals("DIAMONDS", Suit.values()[2].name());
+        assertEquals("SPADES", Suit.values()[3].name());
+
+        assertEquals("SWORDS", Suit.values()[4].name());
     }
 
-    public enum CallMe {
-        YES, NO;
-
-        public String call() {
-            return "Call me " + name().toLowerCase();
-        }
+    public enum Suit {
+        HEARTS, CLUBS, DIAMONDS, SPADES
     }
 }

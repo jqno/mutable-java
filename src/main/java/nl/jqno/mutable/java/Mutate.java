@@ -3,9 +3,12 @@ package nl.jqno.mutable.java;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
+import java.util.Arrays;
 
 public class Mutate {
+    private static final Objenesis OBJENESIS = new ObjenesisStd();
+
     public static void setBoolean(Boolean receiver, boolean newValue) {
         setPrivateField(Boolean.class, "value", receiver, newValue);
     }
@@ -69,17 +72,33 @@ public class Mutate {
         return sb.toString();
     }
 
-    public static <E extends Enum<?>> E createEnumConstant(Class<E> type, int ordinal, String constantName) {
-        Objenesis objenesis = new ObjenesisStd();
-        E newInstance = objenesis.newInstance(type);
-        setPrivateField(Enum.class, "ordinal", newInstance, ordinal);
-        setPrivateField(Enum.class, "name", newInstance, constantName);
-        return newInstance;
+    public static <E extends Enum<?>> void addEnumConstant(Class<E> type, String constantName) {
+        try {
+            Method method = type.getDeclaredMethod("values");
+            Enum[] values = (Enum[])method.invoke(type);
+            int ordinal = values.length;
+
+            E newInstance = OBJENESIS.newInstance(type);
+            setPrivateField(Enum.class, "ordinal", newInstance, ordinal);
+            setPrivateField(Enum.class, "name", newInstance, constantName);
+
+            Enum[] newValues = (Enum[])Array.newInstance(type, ordinal + 1);
+            System.arraycopy(values, 0, newValues, 0, ordinal);
+            newValues[ordinal] = newInstance;
+
+            Field valuesField = getDeclaredField(type, "$VALUES");
+            Field modifiersField = getDeclaredField(Field.class, "modifiers");
+            modifiersField.setInt(valuesField, valuesField.getModifiers() & ~Modifier.FINAL);
+
+            valuesField.set(null, newValues);
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException e) {
+            itDidntWork(e);
+        }
     }
 
     public static Void newVoid() {
-        Objenesis objenesis = new ObjenesisStd();
-        return objenesis.newInstance(Void.class);
+        return OBJENESIS.newInstance(Void.class);
     }
 
     public static <T> void setPrivateField(Class<T> type, String fieldName, T receiver, Object newValue) {

@@ -65,8 +65,12 @@ public class MutateObjectTest {
 
     @Test
     public void addEnumConstant() {
-        Count three = Mutate.createEnumConstant(Count.class, Count.values().length, "THREE");
+        Mutate.addEnumConstant(Count.class, "THREE");
+
+        assertEquals(3, Count.values().length);
+        Count three = Count.values()[2];
         assertEquals("THREE", three.name());
+        assertEquals(2, three.ordinal());
     }
 
     private enum Count {
