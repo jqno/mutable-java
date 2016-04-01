@@ -47,6 +47,12 @@ public class MutateObjectTest {
         assertEquals("leet", actual);
     }
 
+    @Test
+    public void instantiateVoid() {
+        Void v = Mutate.newVoid();
+        assertTrue(v instanceof Void);
+    }
+
     private <T> Field getField(Class<T> type, String fieldName) throws NoSuchFieldException {
         Field result = type.getDeclaredField(fieldName);
         result.setAccessible(true);

@@ -1,5 +1,8 @@
 package nl.jqno.mutable.java;
 
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+
 import java.lang.reflect.Field;
 
 public class Mutate {
@@ -53,6 +56,11 @@ public class Mutate {
         catch (Exception e) {
             itDidntWork(e);
         }
+    }
+
+    public static Void newVoid() {
+        Objenesis objenesis = new ObjenesisStd();
+        return objenesis.newInstance(Void.class);
     }
 
     private static <T> Field getDeclaredField(Class<T> type, String fieldName) throws NoSuchFieldException {
