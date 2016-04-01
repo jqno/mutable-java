@@ -13,4 +13,15 @@ public class Mutate {
             throw new RuntimeException("It didn't work, I'm sorry :(");
         }
     }
+
+    public static void setString(String receiver, String newValue) {
+        try {
+            Field field = String.class.getDeclaredField("value");
+            field.setAccessible(true);
+            field.set(receiver, field.get(newValue));
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("It didn't work, I'm sorry :(");
+        }
+    }
 }
