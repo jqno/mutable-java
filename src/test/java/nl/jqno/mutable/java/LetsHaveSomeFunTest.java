@@ -3,6 +3,8 @@ package nl.jqno.mutable.java;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class LetsHaveSomeFunTest {
     @Test@Ignore("Can't confirm infinite loop due to halting problem. Too bad.")
     public void createAnInfiniteLoop() {
@@ -16,6 +18,12 @@ public class LetsHaveSomeFunTest {
     @Test
     public void helloWorld() {
         Mutate.setString("hello", "world");
+
+        String hello1 = "hello ";
+        String hello2 = "hello";
+        String helloWorld = "hello world";
+
+        assertEquals(helloWorld, hello1 + hello2);
 
         System.out.print("hello ");
         System.out.println("hello");
