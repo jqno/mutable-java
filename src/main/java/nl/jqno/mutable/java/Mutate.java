@@ -3,8 +3,36 @@ package nl.jqno.mutable.java;
 import java.lang.reflect.Field;
 
 public class Mutate {
+    public static void setBoolean(Boolean receiver, boolean newValue) {
+        set(Boolean.class, "value", receiver, newValue);
+    }
+
+    public static void setByte(Byte receiver, byte newValue) {
+        set(Byte.class, "value", receiver, newValue);
+    }
+
+    public static void setChar(Character receiver, char newValue) {
+        set(Character.class, "value", receiver, newValue);
+    }
+
+    public static void setDouble(Double receiver, double newValue) {
+        set(Double.class, "value", receiver, newValue);
+    }
+
+    public static void setFloat(Float receiver, float newValue) {
+        set(Float.class, "value", receiver, newValue);
+    }
+
     public static void setInteger(Integer receiver, int newValue) {
         set(Integer.class, "value", receiver, newValue);
+    }
+
+    public static void setLong(Long receiver, long newValue) {
+        set(Long.class, "value", receiver, newValue);
+    }
+
+    public static void setShort(Short receiver, short newValue) {
+        set(Short.class, "value", receiver, newValue);
     }
 
     public static void setString(String receiver, String newValue) {
