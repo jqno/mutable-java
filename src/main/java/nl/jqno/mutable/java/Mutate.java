@@ -69,6 +69,19 @@ public class Mutate {
         return sb.toString();
     }
 
+    public static <E extends Enum<?>> E createEnumConstant(Class<E> type, int ordinal, String constantName) {
+        Objenesis objenesis = new ObjenesisStd();
+        E newInstance = objenesis.newInstance(type);
+        setPrivateField(Enum.class, "ordinal", newInstance, ordinal);
+        setPrivateField(Enum.class, "name", newInstance, constantName);
+        return newInstance;
+    }
+
+    public static Void newVoid() {
+        Objenesis objenesis = new ObjenesisStd();
+        return objenesis.newInstance(Void.class);
+    }
+
     public static <T> void setPrivateField(Class<T> type, String fieldName, T receiver, Object newValue) {
         try {
             Field field = getDeclaredField(type, fieldName);
@@ -77,11 +90,6 @@ public class Mutate {
         catch (Exception e) {
             itDidntWork(e);
         }
-    }
-
-    public static Void newVoid() {
-        Objenesis objenesis = new ObjenesisStd();
-        return objenesis.newInstance(Void.class);
     }
 
     private static <T> Field getDeclaredField(Class<T> type, String fieldName) throws NoSuchFieldException {

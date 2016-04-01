@@ -64,6 +64,16 @@ public class MutateObjectTest {
     }
 
     @Test
+    public void addEnumConstant() {
+        Count three = Mutate.createEnumConstant(Count.class, Count.values().length, "THREE");
+        assertEquals("THREE", three.name());
+    }
+
+    private enum Count {
+        ONE, TWO
+    }
+
+    @Test
     public void instantiateVoid() {
         Void v = Mutate.newVoid();
         assertTrue(v instanceof Void);

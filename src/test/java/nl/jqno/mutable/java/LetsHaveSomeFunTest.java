@@ -28,4 +28,19 @@ public class LetsHaveSomeFunTest {
         System.out.print("hello ");
         System.out.println("hello");
     }
+
+    @Test
+    public void callMeMaybe() {
+        CallMe maybe = Mutate.createEnumConstant(CallMe.class, 2, "MAYBE");
+        assertEquals("Call me maybe", maybe.call());
+        System.out.println(maybe.call());
+    }
+
+    public enum CallMe {
+        YES, NO;
+
+        public String call() {
+            return "Call me " + name().toLowerCase();
+        }
+    }
 }
