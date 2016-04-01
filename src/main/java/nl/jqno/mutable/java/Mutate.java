@@ -72,6 +72,13 @@ public class Mutate {
         return sb.toString();
     }
 
+    public static <E extends Enum<?>> E copyEnumConstant(Class<E> type, E constant) {
+        E newInstance = OBJENESIS.newInstance(type);
+        setPrivateField(Enum.class, "ordinal", newInstance, constant.ordinal());
+        setPrivateField(Enum.class, "name", newInstance, constant.name());
+        return newInstance;
+    }
+
     public static <E extends Enum<?>> void addEnumConstant(Class<E> type, String constantName) {
         try {
             Method method = type.getDeclaredMethod("values");

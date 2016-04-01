@@ -64,6 +64,14 @@ public class MutateObjectTest {
     }
 
     @Test
+    public void copyEnumConstant() {
+        Count anotherOne = Mutate.copyEnumConstant(Count.class, Count.ONE);
+        assertEquals(Count.ONE.name(), anotherOne.name());
+        assertEquals(Count.ONE.ordinal(), anotherOne.ordinal());
+        assertNotSame(Count.ONE, anotherOne);
+    }
+
+    @Test
     public void addEnumConstant() {
         Mutate.addEnumConstant(Count.class, "THREE");
 

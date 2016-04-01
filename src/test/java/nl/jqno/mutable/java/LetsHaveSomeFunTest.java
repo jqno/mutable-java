@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 public class LetsHaveSomeFunTest {
     @Test@Ignore("Can't confirm infinite loop due to halting problem. Too bad.")
@@ -30,6 +31,22 @@ public class LetsHaveSomeFunTest {
 
         System.out.print("hello ");
         System.out.println("hello");
+    }
+
+    @Test
+    public void noMoreSingleton() {
+        Singleton anotherInstance = Mutate.copyEnumConstant(Singleton.class, Singleton.INSTANCE);
+
+        assertNotSame(Singleton.INSTANCE, anotherInstance);
+        assertEquals(Singleton.INSTANCE.returnSomethingSingletonny(), anotherInstance.returnSomethingSingletonny());
+    }
+
+    public enum Singleton {
+        INSTANCE;
+
+        public String returnSomethingSingletonny() {
+            return "this is a singleton!";
+        }
     }
 
     @Test
