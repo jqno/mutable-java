@@ -88,7 +88,7 @@ public class Mutate {
             Field f = getDeclaredField(String.class, "value");
             setPrivateField(String.class, "value", receiver, f.get(newValue));
         }
-        catch (IllegalAccessException | NoSuchFieldException e) {
+        catch (IllegalAccessException e) {
             itDidntWork(e);
         }
     }
@@ -154,7 +154,7 @@ public class Mutate {
             newValues[ordinal] = newInstance;
             setPrivateField(type, "$VALUES", null, newValues);
         }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException e) {
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             itDidntWork(e);
         }
     }
