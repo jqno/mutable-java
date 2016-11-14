@@ -11,20 +11,16 @@ import java.util.Arrays;
  */
 public class Mutate {
     private static final Objenesis OBJENESIS = new ObjenesisStd();
-    private static final Field MODIFIERS;
+    private static final Field MODIFIERS = getDeclaredField(Field.class, "modifiers");
     
-    static {
+    private static Field getFieldMadeMutable(Class<?> type, String fieldName) {
         try {
-            MODIFIERS = getDeclaredField(Field.class, "modifiers");
-        } catch (NoSuchFieldException e) {
+            Field fieldToMakeMutable = getDeclaredField(type, fieldName);        
+            MODIFIERS.setInt(fieldToMakeMutable, fieldToMakeMutable.getModifiers() & ~Modifier.FINAL);
+            return fieldToMakeMutable;
+        catch (Exception e) {
             itDidntWork(e);
         }
-    }
-    
-    private static Field getFieldMadeMutable(Class<?> type, String fieldName) throws NoSuchFieldException {
-        Field fieldToMakeMutable = getDeclaredField(type, fieldName);        
-        MODIFIERS.setInt(fieldToMakeMutable, fieldToMakeMutable.getModifiers() & ~Modifier.FINAL);
-        return fieldToMakeMutable;
     }
 
     /**
@@ -182,10 +178,14 @@ public class Mutate {
         }
     }
 
-    private static <T> Field getDeclaredField(Class<T> type, String fieldName) throws NoSuchFieldException {
-        Field field = type.getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return field;
+    private static <T> Field getDeclaredField(Class<T> type, String fieldName) {
+        try {
+            Field field = type.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field;
+        } catch (Exception e) {
+            itDidntWork(e);
+        }
     }
 
     private static void itDidntWork(Exception e) {
