@@ -11,6 +11,13 @@ import java.util.Arrays;
  */
 public class Mutate {
     private static final Objenesis OBJENESIS = new ObjenesisStd();
+    private static final Field MODIFIERS = getDeclaredField(Field.class, "modifiers");
+    
+    private static Field getFieldMadeMutable(Class<?> type, String fieldName) {
+        Field fieldToMakeMutable = getDeclaredField(type, fieldName);        
+        MODIFIERS.setInt(fieldToMakeMutable, fieldToMakeMutable.getModifiers() & ~Modifier.FINAL);
+        return fieldToMakeMutable;
+    }
 
     /**
      * Assigns TRUE to FALSE and FALSE to TRUE.
@@ -140,12 +147,7 @@ public class Mutate {
             Enum[] newValues = (Enum[])Array.newInstance(type, ordinal + 1);
             System.arraycopy(values, 0, newValues, 0, ordinal);
             newValues[ordinal] = newInstance;
-
-            Field valuesField = getDeclaredField(type, "$VALUES");
-            Field modifiersField = getDeclaredField(Field.class, "modifiers");
-            modifiersField.setInt(valuesField, valuesField.getModifiers() & ~Modifier.FINAL);
-
-            valuesField.set(null, newValues);
+            setPrivateField(type, "$VALUES", null, newValues);
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException e) {
             itDidntWork(e);
@@ -164,7 +166,7 @@ public class Mutate {
      */
     public static <T> void setPrivateField(Class<T> type, String fieldName, T receiver, Object newValue) {
         try {
-            Field field = getDeclaredField(type, fieldName);
+            Field field = getFieldMadeMutable(type, fieldName);
             field.set(receiver, newValue);
         }
         catch (Exception e) {
