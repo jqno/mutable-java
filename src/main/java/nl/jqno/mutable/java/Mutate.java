@@ -18,6 +18,7 @@ public class Mutate {
             Field fieldToMakeMutable = getDeclaredField(type, fieldName);        
             MODIFIERS.setInt(fieldToMakeMutable, fieldToMakeMutable.getModifiers() & ~Modifier.FINAL);
             return fieldToMakeMutable;
+        }
         catch (Exception e) {
             itDidntWork(e);
         }
