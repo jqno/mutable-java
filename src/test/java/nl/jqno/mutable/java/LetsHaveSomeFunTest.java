@@ -10,13 +10,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
 public class LetsHaveSomeFunTest {
-    @Test@Ignore("Can't confirm infinite loop due to halting problem. Too bad.")
+    @Test
     public void createAnInfiniteLoop() {
+        int realIterations = 0;
         Integer five = 5;
         Mutate.setInteger(five, 4);
-        for (Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < 10 && realIterations < 20; i++) {
+            realIterations++;
             System.out.println(i);
         }
+        assertEquals(20, realIterations);
     }
 
     @Test
