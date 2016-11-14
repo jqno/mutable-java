@@ -11,9 +11,17 @@ import java.util.Arrays;
  */
 public class Mutate {
     private static final Objenesis OBJENESIS = new ObjenesisStd();
-    private static final Field MODIFIERS = getDeclaredField(Field.class, "modifiers");
+    private static final Field MODIFIERS;
     
-    private static Field getFieldMadeMutable(Class<?> type, String fieldName) {
+    static {
+        try {
+            MODIFIERS = getDeclaredField(Field.class, "modifiers");
+        } catch (NoSuchFieldException e) {
+            itDidntWork(e);
+        }
+    }
+    
+    private static Field getFieldMadeMutable(Class<?> type, String fieldName) throws NoSuchFieldException {
         Field fieldToMakeMutable = getDeclaredField(type, fieldName);        
         MODIFIERS.setInt(fieldToMakeMutable, fieldToMakeMutable.getModifiers() & ~Modifier.FINAL);
         return fieldToMakeMutable;
