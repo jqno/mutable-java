@@ -20,7 +20,7 @@ public class Mutate {
             return fieldToMakeMutable;
         }
         catch (Exception e) {
-            itDidntWork(e);
+            return itDidntWork(e);
         }
     }
 
@@ -185,11 +185,11 @@ public class Mutate {
             field.setAccessible(true);
             return field;
         } catch (Exception e) {
-            itDidntWork(e);
+            return itDidntWork(e);
         }
     }
 
-    private static void itDidntWork(Exception e) {
+    private static <T> T itDidntWork(Exception e) {
         throw new RuntimeException("It didn't work, I'm sorry :(", e);
     }
 }
