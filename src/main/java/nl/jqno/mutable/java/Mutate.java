@@ -94,6 +94,28 @@ public class Mutate {
     }
 
     /**
+     * Assigns a new char[] value to an existing (and possibly interned) String object.
+     */
+    public static void setString(String receiver, char[] newValue) {
+        try {
+            Field f = getDeclaredField(String.class, "value");
+            setPrivateField(String.class, "value", receiver, newValue);
+        }
+        catch (IllegalAccessException e) {
+            itDidntWork(e);
+        }
+    }
+
+    /**
+     * Creates and returns a String whose value is the given char array (and not a copy of it).
+     */
+    public static String wrapAsString(char[] value) {
+        String string = new String();
+        setString(string, value);
+        return string;
+    }
+
+    /**
      * Generates a different String with the same hashCode as the original.
      *
      * Adapted from http://stackoverflow.com/a/12926356/127863
