@@ -97,13 +97,8 @@ public class Mutate {
      * Assigns a new char[] value to an existing (and possibly interned) String object.
      */
     public static void setString(String receiver, char[] newValue) {
-        try {
-            Field f = getDeclaredField(String.class, "value");
-            setPrivateField(String.class, "value", receiver, newValue);
-        }
-        catch (IllegalAccessException e) {
-            itDidntWork(e);
-        }
+        Field f = getDeclaredField(String.class, "value");
+        setPrivateField(String.class, "value", receiver, newValue);
     }
 
     /**
