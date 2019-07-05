@@ -11,6 +11,18 @@ import java.util.Arrays;
  */
 public class Mutate {
     private static final Objenesis OBJENESIS = new ObjenesisStd();
+    private static final Field MODIFIERS = getDeclaredField(Field.class, "modifiers");
+    
+    private static Field getFieldMadeMutable(Class<?> type, String fieldName) {
+        try {
+            Field fieldToMakeMutable = getDeclaredField(type, fieldName);        
+            MODIFIERS.setInt(fieldToMakeMutable, fieldToMakeMutable.getModifiers() & ~Modifier.FINAL);
+            return fieldToMakeMutable;
+        }
+        catch (Exception e) {
+            return itDidntWork(e);
+        }
+    }
 
     /**
      * Assigns TRUE to FALSE and FALSE to TRUE.
@@ -76,9 +88,26 @@ public class Mutate {
             Field f = getDeclaredField(String.class, "value");
             setPrivateField(String.class, "value", receiver, f.get(newValue));
         }
-        catch (IllegalAccessException | NoSuchFieldException e) {
+        catch (IllegalAccessException e) {
             itDidntWork(e);
         }
+    }
+
+    /**
+     * Assigns a new char[] value to an existing (and possibly interned) String object.
+     */
+    public static void setString(String receiver, char[] newValue) {
+        Field f = getDeclaredField(String.class, "value");
+        setPrivateField(String.class, "value", receiver, newValue);
+    }
+
+    /**
+     * Creates and returns a String whose value is the given char array (and not a copy of it).
+     */
+    public static String wrapAsString(char[] value) {
+        String string = new String();
+        setString(string, value);
+        return string;
     }
 
     /**
@@ -140,14 +169,9 @@ public class Mutate {
             Enum[] newValues = (Enum[])Array.newInstance(type, ordinal + 1);
             System.arraycopy(values, 0, newValues, 0, ordinal);
             newValues[ordinal] = newInstance;
-
-            Field valuesField = getDeclaredField(type, "$VALUES");
-            Field modifiersField = getDeclaredField(Field.class, "modifiers");
-            modifiersField.setInt(valuesField, valuesField.getModifiers() & ~Modifier.FINAL);
-
-            valuesField.set(null, newValues);
+            setPrivateField(type, "$VALUES", null, newValues);
         }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException e) {
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             itDidntWork(e);
         }
     }
@@ -164,7 +188,7 @@ public class Mutate {
      */
     public static <T> void setPrivateField(Class<T> type, String fieldName, T receiver, Object newValue) {
         try {
-            Field field = getDeclaredField(type, fieldName);
+            Field field = getFieldMadeMutable(type, fieldName);
             field.set(receiver, newValue);
         }
         catch (Exception e) {
@@ -172,13 +196,17 @@ public class Mutate {
         }
     }
 
-    private static <T> Field getDeclaredField(Class<T> type, String fieldName) throws NoSuchFieldException {
-        Field field = type.getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return field;
+    private static <T> Field getDeclaredField(Class<T> type, String fieldName) {
+        try {
+            Field field = type.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field;
+        } catch (Exception e) {
+            return itDidntWork(e);
+        }
     }
 
-    private static void itDidntWork(Exception e) {
+    private static <T> T itDidntWork(Exception e) {
         throw new RuntimeException("It didn't work, I'm sorry :(", e);
     }
 }
